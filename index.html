@@ -7,7 +7,7 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
 
-    <title>reveal.js</title>
+    <title>Lock Free MPMC Queue</title>
 
     <link rel="stylesheet" href="reveal.js/dist/reset.css" />
     <link rel="stylesheet" href="reveal.js/dist/reveal.css" />
@@ -29,20 +29,29 @@
           data-separator-vertical="---"
         >
         </section>
+        <section
+          data-markdown="./graphs.md"
+          data-separator="-----"
+          data-separator-vertical="---"
+        >
+        </section>
       </div>
     </div>
 
-    <script src="reveal.js/dist/reveal.js"></script>
-    <script src="reveal.js/plugin/notes/notes.js"></script>
-    <script src="reveal.js/plugin/markdown/markdown.js"></script>
-    <script src="reveal.js/plugin/highlight/highlight.js"></script>
-    <script src="reveal.js/plugin/zoom/zoom.js"></script>
-    <script>
+    <script src="./reveal.js/dist/reveal.js"></script>
+    <script src="./reveal.js/plugin/notes/notes.js"></script>
+    <script src="./reveal.js/plugin/markdown/markdown.js"></script>
+    <script src="./reveal.js/plugin/highlight/highlight.js"></script>
+    <script src="./reveal.js/plugin/zoom/zoom.js"></script>
+    <script type='module'>
       // More info about initialization & config:
       // - https://revealjs.com/initialization/
       // - https://revealjs.com/config/
       Reveal.initialize({
         hash: true,
+        dependencies: [
+          { src: '//cdn.jsdelivr.net/npm/reveal-plantuml' },
+        ],
 
         // Learn about plugins: https://revealjs.com/plugins/
         plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealZoom],
