@@ -1,8 +1,27 @@
 ```language-plantuml
-@startuml
-Alice -> Bob: Authentication Request
-Bob --> Alice: Authentication Response
-Alice -> Bob: Another authentication Request
-Alice <-- Bob: Another authentication Response
-@enduml
+digraph g {
+  bgcolor = "transparent";
+  node [
+    fontname = "courier";
+    shape = none;
+  ];
+  q [
+    label=<
+      <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+        <tr>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td>0</td>
+          <td>1</td>
+          <td>2</td>
+          <td>3</td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+        </tr>
+      </table>
+    >
+  ];
+}
 ```

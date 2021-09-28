@@ -1,43 +1,20 @@
-  # Title Page
+# Title Page
 
-  ### Date
+### Date
 
-  -----
-  
-  Vertical slides are separated by `- - -`
-  
-  ---
-  
-  Vertical slides are separated by `- - -` .
-  
-  ---
-  
-  Vertical slides are separated by `- - -` ..
+Note:
+asdf qwer
 
-  -----
-  
-  # title
-  ## skills
-  * one
-  * two
-  * three
-  
-  ## heading
-  8. three
-  1. one
-  1. two
+-----
 
-  
-  -----
-  
+Vertical slides are separated by `- - -`
 
-  # Questions
+---
 
-  -----
+Vertical slides are separated by `- - -` .
 
-  ## made with
+---
 
-  #### [reveal.js](https://github.com/hakimel/reveal.js)
+Vertical slides are separated by `- - -` ..
 
-  #### [excalidraw](https://github.com/excalidraw/excalidraw)
 
