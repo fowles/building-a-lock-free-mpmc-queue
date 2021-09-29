@@ -19,15 +19,25 @@
       href="reveal.js/plugin/highlight/monokai.css"
       id="highlight-theme"
     />
+
+    <style>
+        section.white-bg {
+            background: #ddd;
+            border-radius: 10px;
+            padding: 15px !important;
+        }
+    </style>
   </head>
   <body>
     <div class="reveal">
       <div class="slides">
-        <section
-          data-markdown="./index.md"
-          data-separator="-----"
-          data-separator-vertical="---"
+        <section class='white-bg'
+          data-markdown
+          data-background='./rusty-lock.jpg'
         >
+Building a lock-free MPMC queue for tcmalloc
+
+#### by Matt Kulukundis
         </section>
         <section
           data-markdown="./graphs.md"
@@ -49,6 +59,7 @@
       // - https://revealjs.com/config/
       Reveal.initialize({
         hash: true,
+        slideNumber: true,
         dependencies: [
           { src: '//cdn.jsdelivr.net/npm/reveal-plantuml' },
         ],
