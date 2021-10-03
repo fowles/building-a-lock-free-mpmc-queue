@@ -55,6 +55,31 @@ NOTES:
 
 -----
 
+# `tcmalloc`
+
+```language-plantuml
+digraph g {
+  bgcolor = "transparent";
+  rankdir=LR;
+  node [
+    fontname = "courier";
+    shape = box;
+  ];
+  subgraph cluster_0 {
+    label="Per Size Class";
+    "CPU Cache";
+    "Transfer Cache";
+    "Central Free List";
+  }
+  "malloc/free" -> "CPU Cache" [dir="both"];
+  "CPU Cache" -> "Transfer Cache" [dir="both"];
+  "Transfer Cache" -> "Central Free List" [dir="both"];
+  "Central Free List" -> "Operating System" [dir="both"];
+}
+```
+
+-----
+
 ```language-plantuml
 digraph g {
   bgcolor = "transparent";
