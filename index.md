@@ -1,0 +1,84 @@
+<!-- .slide: data-background="./rusty-lock.jpg" -->
+<!-- .slide: class="boxed" -->
+#### Building a lock-free MPMC queue for tcmalloc
+https://github.com/fowles/building-a-lock-free-mpmc-queue
+<!-- .element: style="font-size: 1.1rem;" -->
+##### by Matt Kulukundis
+
+NOTES:
+
+- SLOW DOWN
+- Introduce yourself
+- Mention Speaker notes with links
+- Mention diving into my sources of inspiration/learning
+
+
+-----
+
+<!-- .slide: data-background-color="black" -->
+<!-- .slide: data-background="./epoch-time-model-rich-hickey.jpg" -->
+<!-- .slide: data-background-size="contain" -->
+
+NOTES:
+
+- SLOW DOWN
+- Rich Hickey talk [Are We There Yet](https://www.infoq.com/presentations/Are-We-There-Yet-Rich-Hickey/) at JVM Language Summit in 2009
+- Provides a high level lexicon for understanding concurrency
+- More a mental model and a design principle that can be followed in the future
+- Underscores that all values might be stale values
+
+
+-----
+
+<!-- .slide: data-background-color="black" -->
+<!-- .slide: data-background="./java-memory-model-jeremy-manson.png" -->
+<!-- .slide: data-background-size="contain" -->
+
+NOTES:
+
+- SLOW DOWN
+- Jeremy Manson talk [Advanced Topics in Programming Languages: The Java Memory Model](https://www.youtube.com/watch?v=1FX4zco0ziY) at Google NY in 2007
+- Provides a low level lexicon for talking about concurrency
+- Underscores the importance of using happens-before/happens-after terminology
+- Sapir-Whorf hypothesis
+
+-----
+
+<!-- .slide: data-background="./disruptor-trisha-gee.png" -->
+<!-- .slide: data-background-size="contain" -->
+
+NOTES:
+
+- SLOW DOWN
+- May 2011 Martin Thompson (amone others) introduced Disruptors
+- [Trisha Gee's blog](https://trishagee.github.io/post/disruptor_20__all_change_please/) is where I learned
+
+-----
+
+```language-plantuml
+digraph g {
+  bgcolor = "transparent";
+  node [ fontname = "courier"; shape = none; ];
+  q [
+    label=<
+      <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+        <tr>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td>0</td>
+          <td>1</td>
+          <td>2</td>
+          <td>3</td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+        </tr>
+      </table>
+    >
+  ];
+}
+```
+
+Note:
+asdf qwer

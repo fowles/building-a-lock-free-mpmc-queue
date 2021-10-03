@@ -12,16 +12,14 @@
     <link rel="stylesheet" href="reveal.js/dist/reset.css" />
     <link rel="stylesheet" href="reveal.js/dist/reveal.css" />
     <link rel="stylesheet" href="reveal.js/dist/theme/serif.css" id="theme" />
+    <link rel="stylesheet" href="reveal.js/plugin/highlight/monokai.css" id="highlight-theme" />
+    <!--
+    <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" />
+    -->
 
-    <!-- Theme used for syntax highlighted code -->
-    <link
-      rel="stylesheet"
-      href="reveal.js/plugin/highlight/monokai.css"
-      id="highlight-theme"
-    />
 
     <style>
-        section.white-bg {
+        section.boxed {
             background: #ddd;
             border-radius: 10px;
             padding: 15px !important;
@@ -31,13 +29,11 @@
   <body>
     <div class="reveal">
       <div class="slides">
-        <section class='white-bg'
-          data-markdown
-          data-background='./rusty-lock.jpg'
+        <section
+          data-markdown="index.md"
+          data-separator="-----"
+          data-separator-vertical="---"
         >
-#### Building a lock-free MPMC queue for tcmalloc
-
-##### by Matt Kulukundis
         </section>
         <section
           data-markdown="./graphs.md"
