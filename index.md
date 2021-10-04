@@ -1,9 +1,10 @@
 <!-- .slide: data-background="./rusty-lock.jpg" -->
-<!-- .slide: class="boxed" -->
-#### Building a lock-free MPMC queue for tcmalloc
-https://github.com/fowles/building-a-lock-free-mpmc-queue
-<!-- .element: style="font-size: 1.1rem;" -->
-##### by Matt Kulukundis
+
+<div class=boxed>
+  <h4>Building a lock-free MPMC queue for tcmalloc</h4>
+  <p style="font-size: 1.1rem;">https://github.com/fowles/building-a-lock-free-mpmc-queue</p>
+  <h5>by Matt Kulukundis</h5>
+</div>
 
 NOTES:
 
@@ -104,6 +105,8 @@ digraph g {
   ];
 }
 ```
+
+pain<!-- .element: class="absolute bottom-0 left-0" -->
 
 Note:
 asdf qwer

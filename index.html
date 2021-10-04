@@ -13,16 +13,25 @@
     <link rel="stylesheet" href="reveal.js/dist/reveal.css" />
     <link rel="stylesheet" href="reveal.js/dist/theme/serif.css" id="theme" />
     <link rel="stylesheet" href="reveal.js/plugin/highlight/monokai.css" id="highlight-theme" />
-    <!--
     <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" />
-    -->
 
 
     <style>
-        section.boxed {
-            background: #ddd;
-            border-radius: 10px;
-            padding: 15px !important;
+        .reveal.slide .slides > section, .reveal.slide .slides > section > section {
+          min-height: 100% !important;
+          min-width: 100% !important;
+          display: flex !important;
+          flex-direction: column !important;
+          justify-content: center !important;
+          position: absolute !important;
+          top: 0 !important;
+          align-items: center !important;
+        }
+
+        .boxed {
+          background: #ddd;
+          border-radius: 10px;
+          padding: 15px;
         }
     </style>
   </head>
