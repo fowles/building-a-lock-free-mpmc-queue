@@ -23,7 +23,7 @@ NOTES:
 NOTES:
 
 - SLOW DOWN
-- Rich Hickey talk [Are We There Yet](https://www.infoq.com/presentations/Are-We-There-Yet-Rich-Hickey/) at JVM Language Summit in 2009
+- Rich Hickey's talk [Are We There Yet](https://www.infoq.com/presentations/Are-We-There-Yet-Rich-Hickey/) at JVM Language Summit in 2009
 - Provides a high level lexicon for understanding concurrency
 - More a mental model and a design principle that can be followed in the future
 - Underscores that all values might be stale values
@@ -38,7 +38,7 @@ NOTES:
 NOTES:
 
 - SLOW DOWN
-- Jeremy Manson talk [Advanced Topics in Programming Languages: The Java Memory Model](https://www.youtube.com/watch?v=1FX4zco0ziY) at Google NY in 2007
+- Jeremy Manson's talk [Advanced Topics in Programming Languages: The Java Memory Model](https://www.youtube.com/watch?v=1FX4zco0ziY) at Google NY in 2007
 - Provides a low level lexicon for talking about concurrency
 - Underscores the importance of using happens-before/happens-after terminology
 - Sapir-Whorf hypothesis
