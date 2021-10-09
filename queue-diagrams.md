@@ -102,6 +102,45 @@ digraph g {
       </table>
     >;
   ];
+  head -> q:head;
+}
+```
+
+Note:
+
+- SLOW DOWN
+- and advanced the head pointer
+- but how does this work with multiple producers?
+
+-----
+
+```language-plantuml
+digraph g {
+  bgcolor = "transparent";
+  rankdir = BT;
+  node [
+    fontname = "courier";
+    shape = none;
+  ];
+  q [
+    fontsize=30;
+    label=<
+      <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+        <tr>
+          <td sides="TBR">...</td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td port="head"> </td>
+          <td style="dashed" sides="TBR" > </td>
+          <td style="dashed" sides="TBR" > </td>
+          <td style="dashed" sides="TBR" > </td>
+          <td style="dashed" sides="TBR" > </td>
+        </tr>
+      </table>
+    >;
+  ];
   filled -> q:head;
   filling -> q:head;
 }
