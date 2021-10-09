@@ -105,9 +105,20 @@ NOTES:
 - Jeremy Manson's talk [Advanced Topics in Programming Languages: The Java Memory Model][1] at Google NY in 2007
 - Provides a low level lexicon for talking about concurrency
 - Underscores the importance of using happens-before/happens-after terminology
-- Sapir-Whorf hypothesis
 
 [1]: https://www.youtube.com/watch?v=1FX4zco0ziY
+
+-----
+
+<!-- .slide: data-background="./sapir-whorf.png" -->
+<!-- .slide: data-background-size="contain" -->
+
+NOTES:
+
+- SLOW DOWN
+- You might pick out a theme between these two talks defining our lexicon and mental model.
+- Concurrent programming is hard.  Hard to do, hard to think about.
+- If you nail down your language it can be a really big aid.
 
 -----
 
