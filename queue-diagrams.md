@@ -35,7 +35,7 @@ Note:
 - Let's start with a single writer queue
 - For simplicity we are only going to look at one end.
 
------
+---
 
 ```language-plantuml
 digraph g {
@@ -73,7 +73,7 @@ Note:
 - SLOW DOWN
 - fill in the new value
 
------
+---
 
 ```language-plantuml
 digraph g {
@@ -152,7 +152,7 @@ Note:
 - instead of a single head pointer we keep a pending pointer
 - when a new thread wants to push an element
 
------
+---
 
 ```language-plantuml
 digraph g {
@@ -191,7 +191,7 @@ Note:
 - SLOW DOWN
 - it advances the pending pointer
 
------
+---
 
 ```language-plantuml
 digraph g {
@@ -230,7 +230,7 @@ Note:
 - SLOW DOWN
 - even if the committed pointer has not yet caught up
 
------
+---
 
 ```language-plantuml
 digraph g {
@@ -270,7 +270,7 @@ Note:
 - for the sake of argument, let's say the thread2 finishes first
 - it wants to advance the fill pointer, but it has to wait until it has reached the position before it.
 
------
+---
 
 ```language-plantuml
 digraph g {
@@ -309,7 +309,7 @@ Note:
 - SLOW DOWN
 - once thread1 has finished pending its element, it can advance head
 
------
+---
 
 ```language-plantuml
 digraph g {
@@ -348,7 +348,7 @@ Note:
 - SLOW DOWN
 - and now that head has advanced, thread2 can advance the committed line.
 
------
+---
 
 ```language-plantuml
 digraph g {
@@ -425,7 +425,7 @@ Note:
 - SLOW DOWN
 - removing from the queue is analagous
 
------
+---
 
 ```language-plantuml
 digraph g {
@@ -463,7 +463,7 @@ Note:
 - SLOW DOWN
 - each thread advances pending line
 
------
+---
 
 ```language-plantuml
 digraph g {
@@ -501,7 +501,7 @@ Note:
 - SLOW DOWN
 - potentially in parallel
 
------
+---
 
 ```language-plantuml
 digraph g {
@@ -539,7 +539,7 @@ Note:
 - SLOW DOWN
 - then they actually remove the elements
 
------
+---
 
 ```language-plantuml
 digraph g {
@@ -577,7 +577,7 @@ Note:
 - SLOW DOWN
 - and then they start to advance the commit lines
 
------
+---
 
 ```language-plantuml
 digraph g {
@@ -615,7 +615,7 @@ Note:
 - SLOW DOWN
 - but each thread can only advance from the previous line to the next
 
------
+---
 
 ```language-plantuml
 digraph g {
@@ -714,7 +714,7 @@ Note:
 - here is a view in standard operation
 - there are 2 threads inserting and 2 threads removing
 
------
+---
 
 ##### Full
 
@@ -763,7 +763,7 @@ Note:
 - there are active threads both filling and draining it
 - but there is no space for new things right now
 
------
+---
 
 ##### Empty
 

@@ -17,8 +17,8 @@
 
 
     <style>
-        .reveal.slide .slides > section,
-        .reveal.none .slides > section {
+        .reveal.fade .slides > section, .reveal.fade .slides > section > section,
+        .reveal.none .slides > section, .reveal.none .slides > section > section {
           min-height: 100% !important;
           min-width: 100% !important;
           display: flex !important;
@@ -43,14 +43,12 @@
           data-markdown="index.md"
           data-separator="-----"
           data-separator-vertical="---"
-          data-transition="fade"
         >
         </section>
         <section
           data-markdown="queue-diagrams.md"
           data-separator="-----"
           data-separator-vertical="---"
-          data-transition="fade"
         >
         </section>
       </div>
@@ -68,6 +66,7 @@
       Reveal.initialize({
         hash: true,
         slideNumber: true,
+        transition: 'fade',
         dependencies: [
           { src: '//cdn.jsdelivr.net/npm/reveal-plantuml' },
         ],
