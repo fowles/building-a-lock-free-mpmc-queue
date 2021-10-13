@@ -1198,7 +1198,7 @@ class TransferCache {
   // *Acquires* head and claims space for remove.
   absl::optional<Range> ClaimRemove(int n);
 
-  // Releases `c` and advances its position.
+  // *Releases* `c` and advances its position.
   void AdvanceCommitLine(std::atomic<int32_t>* c, Range r);
 
  public:
@@ -1281,3 +1281,8 @@ Note:
 - This one is a bit less interesting.
 - ADVANCE: in a loop try move from our starting position to our ending one.
 - ADVANCE: do a tiny bit of work to make the spin-loop more efficient
+- Some folks in the audience might recognize this as a very weak spin lock.  In
+  truth it is.  This algorithm isn't entirely lock free, but the locked section
+  is just this spin, there is no external critical section.  Depending on
+  opinions this may qualify it as "lock free" but not as "wait free".  Don't
+  worry, we will undermine the "wait free" case by the end too.
