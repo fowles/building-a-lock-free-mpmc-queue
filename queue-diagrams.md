@@ -1,3 +1,19 @@
+```cc []
+class TransferCache {
+  void InsertRange(absl::Span<void *> batch, int n);
+  int RemoveRange(void** batch, int n);
+};
+```
+
+Note:
+
+- SLOW DOWN
+- Let's start with a single writer queue
+- For simplicity we are only going to look at one end.
+
+
+-----
+
 ```language-plantuml
 digraph g {
   bgcolor = "transparent";
@@ -16,16 +32,30 @@ digraph g {
           <td> </td>
           <td> </td>
           <td port="h0"> </td>
-          <td style="dashed" sides="TBR" > </td>
-          <td style="dashed" sides="TBR" > </td>
-          <td style="dashed" sides="TBR" > </td>
-          <td style="dashed" sides="TBR" > </td>
-          <td style="dashed" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
         </tr>
       </table>
     >;
   ];
   head -> q:h0;
+}
+```
+
+```cc []
+void InsertRange(absl::Span<void *> batch, int n) {
+  ASSERT(0 < n && n <= batch_size_);
+  absl::MutexLock l(&mu_);
+  if (IsFull()) {
+    freelist_.InsertRange(batch.data(), n);
+    return;
+  }
+
+  CopyIntoSlots(batch.data(), head_, n);
+  head_ += n;
 }
 ```
 
@@ -56,15 +86,29 @@ digraph g {
           <td> </td>
           <td port="h0"> </td>
           <td> </td>
-          <td style="dashed" sides="TBR" > </td>
-          <td style="dashed" sides="TBR" > </td>
-          <td style="dashed" sides="TBR" > </td>
-          <td style="dashed" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
         </tr>
       </table>
     >;
   ];
   head -> q:h0;
+}
+```
+
+```cc [3,9]
+void InsertRange(absl::Span<void *> batch, int n) {
+  ASSERT(0 < n && n <= batch_size_);
+  absl::MutexLock l(&mu_);
+  if (IsFull()) {
+    freelist_.InsertRange(batch.data(), n);
+    return;
+  }
+
+  CopyIntoSlots(batch.data(), head_, n);
+  head_ += n;
 }
 ```
 
@@ -94,15 +138,29 @@ digraph g {
           <td> </td>
           <td> </td>
           <td port="h0"> </td>
-          <td style="dashed" sides="TBR" > </td>
-          <td style="dashed" sides="TBR" > </td>
-          <td style="dashed" sides="TBR" > </td>
-          <td style="dashed" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
         </tr>
       </table>
     >;
   ];
   head -> q:h0;
+}
+```
+
+```cc [3,10]
+void InsertRange(absl::Span<void *> batch, int n) {
+  ASSERT(0 < n && n <= batch_size_);
+  absl::MutexLock l(&mu_);
+  if (IsFull()) {
+    freelist_.InsertRange(batch.data(), n);
+    return;
+  }
+
+  CopyIntoSlots(batch.data(), head_, n);
+  head_ += n;
 }
 ```
 
@@ -133,10 +191,10 @@ digraph g {
           <td> </td>
           <td> </td>
           <td port="h0"> </td>
-          <td style="dashed" sides="TBR" > </td>
-          <td style="dashed" sides="TBR" > </td>
-          <td style="dashed" sides="TBR" > </td>
-          <td style="dashed" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
         </tr>
       </table>
     >;
@@ -145,6 +203,22 @@ digraph g {
   "head\npending" -> q:h0;
 }
 ```
+
+```cc []
+void InsertRange(absl::Span<void *> batch, int n) {
+  ASSERT(0 < n && n <= batch_size_);
+  absl::optional<Range> r = ClaimInsert(n);
+  if (!r.has_value()) {
+    freelist_.InsertRange(batch.data(), n);
+    return;
+  }
+
+  CopyIntoSlots(batch.data(), *r);
+  head_committed_.AdvanceCommitLine(*r);
+}
+```
+
+[9ca447](https://github.com/google/tcmalloc/blob/9ca447ccc18bf70e33ac1efa292911590e539e08/tcmalloc/transfer_cache_internals.h#L584) <!-- .element: class="github" -->
 
 Note:
 
@@ -173,10 +247,10 @@ digraph g {
           <td> </td>
           <td> </td>
           <td port="h0"> </td>
-          <td port="h1" style="dashed" sides="TBR" > </td>
-          <td style="dashed" sides="TBR" > </td>
-          <td style="dashed" sides="TBR" > </td>
-          <td style="dashed" sides="TBR" > </td>
+          <td port="h1" style="dotted" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
         </tr>
       </table>
     >;
@@ -185,6 +259,22 @@ digraph g {
   "head\npending" -> q:h1;
 }
 ```
+
+```cc [3]
+void InsertRange(absl::Span<void *> batch, int n) {
+  ASSERT(0 < n && n <= batch_size_);
+  absl::optional<Range> r = ClaimInsert(n);
+  if (!r.has_value()) {
+    freelist_.InsertRange(batch.data(), n);
+    return;
+  }
+
+  CopyIntoSlots(batch.data(), *r);
+  head_committed_.AdvanceCommitLine(*r);
+}
+```
+
+[9ca447](https://github.com/google/tcmalloc/blob/9ca447ccc18bf70e33ac1efa292911590e539e08/tcmalloc/transfer_cache_internals.h#L584) <!-- .element: class="github" -->
 
 Note:
 
@@ -212,10 +302,10 @@ digraph g {
           <td> </td>
           <td> </td>
           <td port="h0"> </td>
-          <td port="h1" style="dashed" sides="TBR" > </td>
-          <td port="h2" style="dashed" sides="TBR" > </td>
-          <td style="dashed" sides="TBR" > </td>
-          <td style="dashed" sides="TBR" > </td>
+          <td port="h1" style="dotted" sides="TBR" > </td>
+          <td port="h2" style="dotted" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
         </tr>
       </table>
     >;
@@ -224,6 +314,22 @@ digraph g {
   "head\npending" -> q:h2;
 }
 ```
+
+```cc [3]
+void InsertRange(absl::Span<void *> batch, int n) {
+  ASSERT(0 < n && n <= batch_size_);
+  absl::optional<Range> r = ClaimInsert(n);
+  if (!r.has_value()) {
+    freelist_.InsertRange(batch.data(), n);
+    return;
+  }
+
+  CopyIntoSlots(batch.data(), *r);
+  head_committed_.AdvanceCommitLine(*r);
+}
+```
+
+[9ca447](https://github.com/google/tcmalloc/blob/9ca447ccc18bf70e33ac1efa292911590e539e08/tcmalloc/transfer_cache_internals.h#L584) <!-- .element: class="github" -->
 
 Note:
 
@@ -251,10 +357,10 @@ digraph g {
           <td> </td>
           <td> </td>
           <td port="h0"> </td>
-          <td port="h1" style="dashed" sides="TBR" > </td>
-          <td port="h2" > </td>
-          <td style="dashed" sides="TBR" > </td>
-          <td style="dashed" sides="TBR" > </td>
+          <td port="h1" style="dotted" sides="TBR" > </td>
+          <td port="h2" style="dotted" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
         </tr>
       </table>
     >;
@@ -263,6 +369,78 @@ digraph g {
   "head\npending" -> q:h2;
 }
 ```
+
+```cc [9]
+void InsertRange(absl::Span<void *> batch, int n) {
+  ASSERT(0 < n && n <= batch_size_);
+  absl::optional<Range> r = ClaimInsert(n);
+  if (!r.has_value()) {
+    freelist_.InsertRange(batch.data(), n);
+    return;
+  }
+
+  CopyIntoSlots(batch.data(), *r);
+  head_committed_.AdvanceCommitLine(*r);
+}
+```
+
+[9ca447](https://github.com/google/tcmalloc/blob/9ca447ccc18bf70e33ac1efa292911590e539e08/tcmalloc/transfer_cache_internals.h#L584) <!-- .element: class="github" -->
+
+Note:
+
+- SLOW DOWN
+- at this point two threads are running in parallel on this line!
+
+---
+
+```language-plantuml
+digraph g {
+  bgcolor = "transparent";
+  rankdir = BT;
+  node [
+    fontname = "courier";
+    shape = none;
+  ];
+  q [
+    fontsize=30;
+    label=<
+      <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+        <tr>
+          <td sides="TBR">...</td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td port="h0"> </td>
+          <td port="h1" style="dotted" sides="TBR" > </td>
+          <td port="h2" > </td>
+          <td style="dotted" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
+        </tr>
+      </table>
+    >;
+  ];
+  "head\ncommitted" -> q:h0;
+  "head\npending" -> q:h2;
+}
+```
+
+```cc [10]
+void InsertRange(absl::Span<void *> batch, int n) {
+  ASSERT(0 < n && n <= batch_size_);
+  absl::optional<Range> r = ClaimInsert(n);
+  if (!r.has_value()) {
+    freelist_.InsertRange(batch.data(), n);
+    return;
+  }
+
+  CopyIntoSlots(batch.data(), *r);
+  head_committed_.AdvanceCommitLine(*r);
+}
+```
+
+[9ca447](https://github.com/google/tcmalloc/blob/9ca447ccc18bf70e33ac1efa292911590e539e08/tcmalloc/transfer_cache_internals.h#L584) <!-- .element: class="github" -->
+
 
 Note:
 
@@ -293,8 +471,8 @@ digraph g {
           <td port="h0"> </td>
           <td port="h1" sides="TBR" > </td>
           <td port="h2" > </td>
-          <td style="dashed" sides="TBR" > </td>
-          <td style="dashed" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
         </tr>
       </table>
     >;
@@ -303,6 +481,22 @@ digraph g {
   "head\npending" -> q:h2;
 }
 ```
+
+```cc [10]
+void InsertRange(absl::Span<void *> batch, int n) {
+  ASSERT(0 < n && n <= batch_size_);
+  absl::optional<Range> r = ClaimInsert(n);
+  if (!r.has_value()) {
+    freelist_.InsertRange(batch.data(), n);
+    return;
+  }
+
+  CopyIntoSlots(batch.data(), *r);
+  head_committed_.AdvanceCommitLine(*r);
+}
+```
+
+[9ca447](https://github.com/google/tcmalloc/blob/9ca447ccc18bf70e33ac1efa292911590e539e08/tcmalloc/transfer_cache_internals.h#L584) <!-- .element: class="github" -->
 
 Note:
 
@@ -332,8 +526,8 @@ digraph g {
           <td port="h0"> </td>
           <td port="h1" sides="TBR" > </td>
           <td port="h2" > </td>
-          <td style="dashed" sides="TBR" > </td>
-          <td style="dashed" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
         </tr>
       </table>
     >;
@@ -342,6 +536,22 @@ digraph g {
   "head\npending" -> q:h2;
 }
 ```
+
+```cc [10]
+void InsertRange(absl::Span<void *> batch, int n) {
+  ASSERT(0 < n && n <= batch_size_);
+  absl::optional<Range> r = ClaimInsert(n);
+  if (!r.has_value()) {
+    freelist_.InsertRange(batch.data(), n);
+    return;
+  }
+
+  CopyIntoSlots(batch.data(), *r);
+  head_committed_.AdvanceCommitLine(*r);
+}
+```
+
+[9ca447](https://github.com/google/tcmalloc/blob/9ca447ccc18bf70e33ac1efa292911590e539e08/tcmalloc/transfer_cache_internals.h#L584) <!-- .element: class="github" -->
 
 Note:
 
@@ -371,8 +581,8 @@ digraph g {
           <td port="h0"> </td>
           <td port="h1" sides="TBR" > </td>
           <td port="h2" > </td>
-          <td style="dashed" sides="TBR" > </td>
-          <td style="dashed" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
         </tr>
       </table>
     >;
@@ -381,6 +591,22 @@ digraph g {
   "head\npending" -> q:h2;
 }
 ```
+
+```cc [10]
+void InsertRange(absl::Span<void *> batch, int n) {
+  ASSERT(0 < n && n <= batch_size_);
+  absl::optional<Range> r = ClaimInsert(n);
+  if (!r.has_value()) {
+    freelist_.InsertRange(batch.data(), n);
+    return;
+  }
+
+  CopyIntoSlots(batch.data(), *r);
+  head_committed_.AdvanceCommitLine(*r);
+}
+```
+
+[9ca447](https://github.com/google/tcmalloc/blob/9ca447ccc18bf70e33ac1efa292911590e539e08/tcmalloc/transfer_cache_internals.h#L584) <!-- .element: class="github" -->
 
 Note:
 
@@ -402,9 +628,9 @@ digraph g {
     label=<
       <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
         <tr>
-          <td style="dashed"> </td>
-          <td style="dashed" sides="TBR" > </td>
-          <td style="dashed" sides="TBR" > </td>
+          <td style="dotted"> </td>
+          <td style="dotted" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
           <td port="h0"> </td>
           <td> </td>
           <td> </td>
@@ -419,6 +645,22 @@ digraph g {
   "tail\npending" -> q:h0;
 }
 ```
+
+```cc []
+int RemoveRange(void **batch, int n) {
+  ASSERT(n > 0);
+  absl::optional<Range> r = ClaimRemove(n);
+  if (!r.has_value()) {
+    return freelist_.RemoveRange(batch, n);
+  }
+
+  CopyFromSlots(batch, *r);
+  tail_committed_.AdvanceCommitLine(*r, batch_size_);
+  return n;
+}
+```
+
+[9ca447](https://github.com/google/tcmalloc/blob/9ca447ccc18bf70e33ac1efa292911590e539e08/tcmalloc/transfer_cache_internals.h#L602) <!-- .element: class="github" -->
 
 Note:
 
@@ -440,9 +682,9 @@ digraph g {
     label=<
       <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
         <tr>
-          <td style="dashed"> </td>
-          <td style="dashed" sides="TBR" > </td>
-          <td style="dashed" sides="TBR" > </td>
+          <td style="dotted"> </td>
+          <td style="dotted" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
           <td port="h0"> </td>
           <td port="h1"> </td>
           <td port="h2"> </td>
@@ -457,6 +699,22 @@ digraph g {
   "tail\npending" -> q:h1;
 }
 ```
+
+```cc [3]
+int RemoveRange(void **batch, int n) {
+  ASSERT(n > 0);
+  absl::optional<Range> r = ClaimRemove(n);
+  if (!r.has_value()) {
+    return freelist_.RemoveRange(batch, n);
+  }
+
+  CopyFromSlots(batch, *r);
+  tail_committed_.AdvanceCommitLine(*r, batch_size_);
+  return n;
+}
+```
+
+[9ca447](https://github.com/google/tcmalloc/blob/9ca447ccc18bf70e33ac1efa292911590e539e08/tcmalloc/transfer_cache_internals.h#L602) <!-- .element: class="github" -->
 
 Note:
 
@@ -478,9 +736,9 @@ digraph g {
     label=<
       <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
         <tr>
-          <td style="dashed"> </td>
-          <td style="dashed" sides="TBR" > </td>
-          <td style="dashed" sides="TBR" > </td>
+          <td style="dotted"> </td>
+          <td style="dotted" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
           <td port="h0"> </td>
           <td port="h1"> </td>
           <td port="h2"> </td>
@@ -495,6 +753,22 @@ digraph g {
   "tail\npending" -> q:h2;
 }
 ```
+
+```cc [3]
+int RemoveRange(void **batch, int n) {
+  ASSERT(n > 0);
+  absl::optional<Range> r = ClaimRemove(n);
+  if (!r.has_value()) {
+    return freelist_.RemoveRange(batch, n);
+  }
+
+  CopyFromSlots(batch, *r);
+  tail_committed_.AdvanceCommitLine(*r, batch_size_);
+  return n;
+}
+```
+
+[9ca447](https://github.com/google/tcmalloc/blob/9ca447ccc18bf70e33ac1efa292911590e539e08/tcmalloc/transfer_cache_internals.h#L602) <!-- .element: class="github" -->
 
 Note:
 
@@ -516,11 +790,11 @@ digraph g {
     label=<
       <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
         <tr>
-          <td style="dashed"> </td>
-          <td style="dashed" sides="TBR" > </td>
-          <td style="dashed" sides="TBR" > </td>
+          <td style="dotted"> </td>
+          <td style="dotted" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
           <td port="h0"> </td>
-          <td port="h1" style="dashed" sides="TBR"> </td>
+          <td port="h1" style="dotted" sides="TBR"> </td>
           <td port="h2"> </td>
           <td> </td>
           <td> </td>
@@ -533,6 +807,22 @@ digraph g {
   "tail\npending" -> q:h2;
 }
 ```
+
+```cc [8]
+int RemoveRange(void **batch, int n) {
+  ASSERT(n > 0);
+  absl::optional<Range> r = ClaimRemove(n);
+  if (!r.has_value()) {
+    return freelist_.RemoveRange(batch, n);
+  }
+
+  CopyFromSlots(batch, *r);
+  tail_committed_.AdvanceCommitLine(*r, batch_size_);
+  return n;
+}
+```
+
+[9ca447](https://github.com/google/tcmalloc/blob/9ca447ccc18bf70e33ac1efa292911590e539e08/tcmalloc/transfer_cache_internals.h#L602) <!-- .element: class="github" -->
 
 Note:
 
@@ -554,11 +844,11 @@ digraph g {
     label=<
       <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
         <tr>
-          <td style="dashed"> </td>
-          <td style="dashed" sides="TBR" > </td>
-          <td style="dashed" sides="TBR" > </td>
-          <td port="h0" style="dashed" sides="TBR"> </td>
-          <td port="h1" style="dashed" sides="TBR"> </td>
+          <td style="dotted"> </td>
+          <td style="dotted" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
+          <td port="h0" style="dotted" sides="TBR"> </td>
+          <td port="h1" style="dotted" sides="TBR"> </td>
           <td port="h2"> </td>
           <td> </td>
           <td> </td>
@@ -571,6 +861,23 @@ digraph g {
   "tail\npending" -> q:h2;
 }
 ```
+
+```cc [8]
+int RemoveRange(void **batch, int n) {
+  ASSERT(n > 0);
+  absl::optional<Range> r = ClaimRemove(n);
+  if (!r.has_value()) {
+    return freelist_.RemoveRange(batch, n);
+  }
+
+  CopyFromSlots(batch, *r);
+  tail_committed_.AdvanceCommitLine(*r, batch_size_);
+  return n;
+}
+```
+
+[9ca447](https://github.com/google/tcmalloc/blob/9ca447ccc18bf70e33ac1efa292911590e539e08/tcmalloc/transfer_cache_internals.h#L602) <!-- .element: class="github" -->
+
 
 Note:
 
@@ -592,11 +899,11 @@ digraph g {
     label=<
       <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
         <tr>
-          <td style="dashed"> </td>
-          <td style="dashed" sides="TBR" > </td>
-          <td style="dashed" sides="TBR" > </td>
-          <td port="h0" style="dashed" sides="TBR"> </td>
-          <td port="h1" style="dashed" sides="TBR"> </td>
+          <td style="dotted"> </td>
+          <td style="dotted" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
+          <td port="h0" style="dotted" sides="TBR"> </td>
+          <td port="h1" style="dotted" sides="TBR"> </td>
           <td port="h2"> </td>
           <td> </td>
           <td> </td>
@@ -609,6 +916,23 @@ digraph g {
   "tail\npending" -> q:h2;
 }
 ```
+
+```cc [9]
+int RemoveRange(void **batch, int n) {
+  ASSERT(n > 0);
+  absl::optional<Range> r = ClaimRemove(n);
+  if (!r.has_value()) {
+    return freelist_.RemoveRange(batch, n);
+  }
+
+  CopyFromSlots(batch, *r);
+  tail_committed_.AdvanceCommitLine(*r, batch_size_);
+  return n;
+}
+```
+
+[9ca447](https://github.com/google/tcmalloc/blob/9ca447ccc18bf70e33ac1efa292911590e539e08/tcmalloc/transfer_cache_internals.h#L602) <!-- .element: class="github" -->
+
 
 Note:
 
@@ -630,11 +954,11 @@ digraph g {
     label=<
       <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
         <tr>
-          <td style="dashed"> </td>
-          <td style="dashed" sides="TBR" > </td>
-          <td style="dashed" sides="TBR" > </td>
-          <td port="h0" style="dashed" sides="TBR"> </td>
-          <td port="h1" style="dashed" sides="TBR"> </td>
+          <td style="dotted"> </td>
+          <td style="dotted" sides="TBR" > </td>
+          <td style="dotted" sides="TBR" > </td>
+          <td port="h0" style="dotted" sides="TBR"> </td>
+          <td port="h1" style="dotted" sides="TBR"> </td>
           <td port="h2"> </td>
           <td> </td>
           <td> </td>
@@ -647,6 +971,22 @@ digraph g {
   "tail\npending" -> q:h2;
 }
 ```
+
+```cc [9]
+int RemoveRange(void **batch, int n) {
+  ASSERT(n > 0);
+  absl::optional<Range> r = ClaimRemove(n);
+  if (!r.has_value()) {
+    return freelist_.RemoveRange(batch, n);
+  }
+
+  CopyFromSlots(batch, *r);
+  tail_committed_.AdvanceCommitLine(*r, batch_size_);
+  return n;
+}
+```
+
+[9ca447](https://github.com/google/tcmalloc/blob/9ca447ccc18bf70e33ac1efa292911590e539e08/tcmalloc/transfer_cache_internals.h#L602) <!-- .element: class="github" -->
 
 Note:
 
@@ -681,22 +1021,22 @@ digraph g {
     label=<
       <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
         <tr>
-          <td style="dashed" sides="TBR">...</td>
-          <td style="dashed" sides="TBR"> </td>
-          <td style="dashed" sides="TBR"> </td>
-          <td port="tc" style="dashed" sides="TBR"> </td>
-          <td style="dashed" sides="TBR"> </td>
+          <td style="dotted" sides="TBR">...</td>
+          <td style="dotted" sides="TBR"> </td>
+          <td style="dotted" sides="TBR"> </td>
+          <td port="tc" style="dotted" sides="TBR"> </td>
+          <td style="dotted" sides="TBR"> </td>
           <td port="tp"> </td>
           <td> </td>
           <td> </td>
           <td> </td>
           <td port="hc"> </td>
-          <td style="dashed" sides="TBR"> </td>
-          <td port="hp" style="dashed" sides="TBR"> </td>
-          <td style="dashed" sides="TBR"> </td>
-          <td style="dashed" sides="TBR"> </td>
-          <td style="dashed" sides="TBR"> </td>
-          <td style="dashed" sides="TB">...</td>
+          <td style="dotted" sides="TBR"> </td>
+          <td port="hp" style="dotted" sides="TBR"> </td>
+          <td style="dotted" sides="TBR"> </td>
+          <td style="dotted" sides="TBR"> </td>
+          <td style="dotted" sides="TBR"> </td>
+          <td style="dotted" sides="TB">...</td>
         </tr>
       </table>
     >;
@@ -735,12 +1075,12 @@ digraph g {
           <td> </td>
           <td> </td>
           <td port="hc"> </td>
-          <td style="dashed" sides="TBR"> </td>
-          <td style="dashed" sides="TBR"> </td>
-          <td style="dashed" sides="TBR"> </td>
-          <td port="hp" style="dashed" sides="TBR"> </td>
-          <td port="tc" style="dashed" sides="TBR"> </td>
-          <td style="dashed" sides="TBR"> </td>
+          <td style="dotted" sides="TBR"> </td>
+          <td style="dotted" sides="TBR"> </td>
+          <td style="dotted" sides="TBR"> </td>
+          <td port="hp" style="dotted" sides="TBR"> </td>
+          <td port="tc" style="dotted" sides="TBR"> </td>
+          <td style="dotted" sides="TBR"> </td>
           <td port="tp"> </td>
           <td> </td>
           <td> </td>
@@ -780,20 +1120,20 @@ digraph g {
     label=<
       <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
         <tr>
-          <td style="dashed" sides="TBR">...</td>
-          <td style="dashed" sides="TBR"> </td>
-          <td style="dashed" sides="TBR"> </td>
-          <td style="dashed" sides="TBR"> </td>
-          <td style="dashed" sides="TBR"> </td>
-          <td style="dashed" sides="TBR"> </td>
-          <td style="dashed" sides="TBR"> </td>
-          <td style="dashed" sides="TBR" port="p"> </td>
-          <td style="dashed" sides="TBR"> </td>
-          <td style="dashed" sides="TBR"> </td>
-          <td style="dashed" sides="TBR"> </td>
-          <td style="dashed" sides="TBR"> </td>
-          <td style="dashed" sides="TBR"> </td>
-          <td style="dashed" sides="TB">...</td>
+          <td style="dotted" sides="TBR">...</td>
+          <td style="dotted" sides="TBR"> </td>
+          <td style="dotted" sides="TBR"> </td>
+          <td style="dotted" sides="TBR"> </td>
+          <td style="dotted" sides="TBR"> </td>
+          <td style="dotted" sides="TBR"> </td>
+          <td style="dotted" sides="TBR"> </td>
+          <td style="dotted" sides="TBR" port="p"> </td>
+          <td style="dotted" sides="TBR"> </td>
+          <td style="dotted" sides="TBR"> </td>
+          <td style="dotted" sides="TBR"> </td>
+          <td style="dotted" sides="TBR"> </td>
+          <td style="dotted" sides="TBR"> </td>
+          <td style="dotted" sides="TB">...</td>
         </tr>
       </table>
     >;
