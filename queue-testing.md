@@ -33,7 +33,7 @@ NOTES:
 <img class="fragment absolute transform -rotate-12 translate-x-10" src="./sir-not-appearing.png" style="width: 60%;" data-fragment-index="2" />
 
 
-[ce9370a](https://github.com/google/tcmalloc/commit/ce9370ad2d603801d82cf28935ea29ad28b5e91c) <!-- .element: class="github fragment" style="background-color: rgb(229 231 225)" data-fragment-index="2" -->
+[ce9370a](https://github.com/google/tcmalloc/commit/ce9370ad2d603801d82cf28935ea29ad28b5e91c) <!-- .element: class="github fragment" data-fragment-index="2" -->
 
 
 NOTES:

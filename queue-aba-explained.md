@@ -155,7 +155,7 @@ absl::optional<Range> ClaimRemove(int n) {
 }
 ```
 
-[398b03c](https://github.com/google/tcmalloc/commit/398b03cf62804b24559b15422b2aea9b710fdb97#diff-fe2f8ee3b392be2f61ca686947bb43adffc4bbb12dde9dfac7bbf7edb219b824L757-R766) <!-- .element: class="github" style="background-color: rgb(229 231 225)" -->
+[398b03c](https://github.com/google/tcmalloc/commit/398b03cf62804b24559b15422b2aea9b710fdb97#diff-fe2f8ee3b392be2f61ca686947bb43adffc4bbb12dde9dfac7bbf7edb219b824L757-R766) <!-- .element: class="github" -->
 
 NOTES:
 
@@ -183,7 +183,7 @@ void CopyIntoSlots(Span<void*> batch, Range r) {
 }
 ```
 
-[398b03c](https://github.com/google/tcmalloc/commit/398b03cf62804b24559b15422b2aea9b710fdb97#diff-fe2f8ee3b392be2f61ca686947bb43adffc4bbb12dde9dfac7bbf7edb219b824R746-R747) <!-- .element: class="github" style="background-color: rgb(229 231 225)" -->
+[398b03c](https://github.com/google/tcmalloc/commit/398b03cf62804b24559b15422b2aea9b710fdb97#diff-fe2f8ee3b392be2f61ca686947bb43adffc4bbb12dde9dfac7bbf7edb219b824R746-R747) <!-- .element: class="github" -->
 
 NOTES:
 

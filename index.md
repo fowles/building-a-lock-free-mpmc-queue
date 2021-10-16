@@ -1,6 +1,6 @@
 <!-- .slide: data-background="./rusty-lock.jpg" -->
 
-<div class="boxed">
+<div class="background" style="border-radius: 10px">
   <h4 style="margin-bottom: 0;">Building a lock-free MPMC queue for tcmalloc</h4>
   <a style="font-size: 1.1rem;" href="https://github.com/fowles/building-a-lock-free-mpmc-queue"> https://github.com/fowles/building-a-lock-free-mpmc-queue </a>
   <h5>by Matt Kulukundis</h5>
