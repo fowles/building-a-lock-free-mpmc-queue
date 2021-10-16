@@ -98,7 +98,7 @@ NOTES:
 
 <!-- .slide: data-background="./race-drag.png" -->
 
-```cc
+```json
 -- total:qps --
 base: XXXXX.XX ±XX (8 trials, 8.0 robust values)
 test: YYYYY.YY ±XX (8 trials, 7.0 robust values)
@@ -561,7 +561,7 @@ NOTES:
 
 <!-- .slide: data-background="./race-autocross.png" -->
 
-```cc
+```json
 -- total:qps --
 base: XXXXX.XX ±XX (8 trials, 8.0 robust values)
 test: YYYYY.YY ±XX (8 trials, 8.0 robust values)
@@ -602,4 +602,68 @@ NOTES:
 - SLOW DOWN
 - Eventually, I found a different thing somewhere between a benchmark and a
   system test that had a firm opinion. 3.5% slower.
+
+-----
+
+<!-- .slide: data-background="./treasure.png" -->
+<!-- .slide: data-background-size="contain" -->
+<!-- .slide: data-background-color="white" -->
+
+<img class="fragment" src="./axo.png" style="width: 40%;" />
+<img class="fragment absolute transform -rotate-12 -translate-x-20 translate-y-20" src="./tribbles.png" style="width: 60%;" />
+
+<img class="fragment absolute transform rotate-12 translate-x-40 -translate-y-20" src="./letter-a.png" style="width: 60%;" />
+
+<img class="fragment absolute top-0 left-0" src="./race-drag.png" style="width: 30%;" />
+<img class="fragment absolute top-20 left-20" src="./race-autocross.png" style="width: 30%;" />
+<img class="fragment absolute transform translate-x-40 translate-y-40" src="./deepwater-horizon.png" style="width: 40%;" />
+
+NOTES:
+
+- SLOW DOWN
+- ADVANCE: we refactored some code, which always just feels good
+- ADVANCE: we added some multi-threaded fuzz tests
+- ADVANCE: we got to debug an ABA issue
+- ADVANCE: we learned how our benchmarks resembled production
+- ADVANCE: or really how they didn't resemble it, but how we can improve it
+- ADVANCE: we got to track down a few bugs in our implementation
+
+-----
+
+<!-- .slide: data-background="./adventure.png" -->
+
+NOTES:
+
+- SLOW DOWN
+- Also, it has given me a really good idea, for a clever concurrent data
+  structure.
+- What if we build on the existing thing but use elimination buckets and flat
+  combinging when there is high contention?
+
+---
+
+<!-- .slide: data-background="./adventure.png" -->
+
+[Flat Combine](http://people.csail.mit.edu/shanir/publications/Flat%20Combining%20SPAA%2010.pdf) <!-- .element: class="github" -->
+[Elimination Buckets](https://people.csail.mit.edu/shanir/publications/Lock_Free.pdf) <!-- .element: class="github" style="margin-left: 100px" -->
+
+NOTES:
+
+- SLOW DOWN
+- Maybe next year...
+
+
+---
+
+<!-- .slide: data-background="./adventure.png" -->
+
+#### Questions? <!-- .element: class="background" style="border-radius: 10px" -->
+
+NOTES:
+
+- SLOW DOWN
+- Also, it has given me a really good idea, for a clever concurrent data
+  structure.
+- What if we build on the existing thing but use elimination buckets and flat
+  combinging when there is high contention?
 
