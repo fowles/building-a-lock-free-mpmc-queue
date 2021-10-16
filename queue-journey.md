@@ -795,6 +795,54 @@ digraph g {
           <td port="r7"> </td>
           <td port="r8"> </td>
           <td port="r9"> </td>
+          <td port="r10" style="dotted" sides="TBR"> </td>
+          <td port="r11" style="dotted" sides="TBR"> </td>
+          <td port="r12" style="dotted" sides="TBR"> </td>
+          <td port="r13" style="dotted" sides="TBR"> </td>
+          <td port="r14" style="dotted" sides="TBR"> </td>
+          <td port="r15" style="dotted" sides="TB">...</td>
+        </tr>
+      </table>
+    >;
+  ];
+  q:r9 -> "my view of\nhead committed" [dir="back"];
+  "tail\ncommitted" -> q:r3;
+  "tail\npending" -> q:r5;
+  "head\ncommitted" -> q:r9;
+  "head\npending" -> q:r11;
+}
+```
+
+Note:
+
+- SLOW DOWN
+- What happens if I acquire head committed and then go to sleep for a while...
+
+---
+
+```language-plantuml
+digraph g {
+  bgcolor = "transparent";
+  rankdir = BT;
+  node [
+    fontname = "courier";
+    shape = none;
+  ];
+  q [
+    fontsize=30;
+    label=<
+      <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+        <tr>
+          <td port="r0" style="dotted" sides="TBR">...</td>
+          <td port="r1" style="dotted" sides="TBR"> </td>
+          <td port="r2" style="dotted" sides="TBR"> </td>
+          <td port="r3" style="dotted" sides="TBR"> </td>
+          <td port="r4" style="dotted" sides="TBR"> </td>
+          <td port="r5"> </td>
+          <td port="r6"> </td>
+          <td port="r7"> </td>
+          <td port="r8"> </td>
+          <td port="r9"> </td>
           <td port="r10"> </td>
           <td port="r11"> </td>
           <td port="r12" style="dotted" sides="TBR"> </td>
@@ -960,7 +1008,7 @@ digraph g {
 Note:
 
 - SLOW DOWN
-- and even myth is long forgotten when the Age that gave it birth comes again.
+- and even myth is long forgotten
 
 ---
 
@@ -1039,7 +1087,7 @@ absl::optional<Range> ClaimRemove(int n) {
 NOTES:
 
 - SLOW DOWN
-- empires can rise and all around me while I wait here.
+- empires can rise fand all around me while I wait here.
 - and as long as this contains the value it contained before I went to sleep
 - I can be none the wiser
 - welcome to the canonical ABA bug.
@@ -1131,25 +1179,23 @@ NOTES:
 
 <!-- .slide: data-background="./letter-a.png" -->
 
-```cc
+```cc [2]
 void CopyIntoSlots(Span<void*> batch, Range r) {
-  r.start &= slots_mask_;
-  r.end &= slots_mask_;
+  r.start %= slots_size(); r.end %= slots_size();
   if (ABSL_PREDICT_TRUE(r.start < r.end)) {
-    void **entry = GetSlot(r.start);
-    memcpy(entry, batch, sizeof(void *) * (r.end - r.start));
+    memcpy(GetSlot(r.start), batch.data(),
+           sizeof(void*) * (r.end - r.start));
   } else {
-    int32_t overhang = slots_mask_ + 1 - r.start;
-    void **entry = GetSlot(r.start);
-    memcpy(entry, batch, sizeof(void *) * overhang);
-    batch += overhang;
-    entry = GetSlot(0);
-    memcpy(entry, batch, sizeof(void *) * r.end);
+    int32_t overhang = slots_size() + 1 - r.start;
+    memcpy(GetSlot(r.start), batch.data(),
+           sizeof(void*) * overhang);
+    memcpy(GetSlot(0), batch.data() + overhang,
+           sizeof(void*) * r.end);
   }
 }
 ```
 
-[398b03c](https://github.com/google/tcmalloc/commit/398b03cf62804b24559b15422b2aea9b710fdb97#diff-fe2f8ee3b392be2f61ca686947bb43adffc4bbb12dde9dfac7bbf7edb219b824L757-R766) <!-- .element: class="github" style="background-color: rgb(229 231 225)" -->
+[398b03c](https://github.com/google/tcmalloc/commit/398b03cf62804b24559b15422b2aea9b710fdb97#diff-fe2f8ee3b392be2f61ca686947bb43adffc4bbb12dde9dfac7bbf7edb219b824R746-R747) <!-- .element: class="github" style="background-color: rgb(229 231 225)" -->
 
 NOTES:
 
