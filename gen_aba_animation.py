@@ -3,57 +3,8 @@
 import random
 
 slide_template = '''
-<div class="background">
-<pre><code class="language-plantuml"><script type="text/template">
-digraph g {
-  bgcolor = "transparent";
-  rankdir = BT;
-  node [
-    fontname = "courier";
-    shape = none;
-  ];
-  q [
-    fontsize=30;
-    label=<
-      <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
-        <tr>
-          <td port="r0" %(0)s>...</td>
-          <td port="r1" %(1)s> </td>
-          <td port="r2" %(2)s> </td>
-          <td port="r3" %(3)s> </td>
-          <td port="r4" %(4)s> </td>
-          <td port="r5" %(5)s> </td>
-          <td port="r6" %(6)s> </td>
-          <td port="r7" %(7)s> </td>
-          <td port="r8" %(8)s> </td>
-          <td port="r9" %(9)s> </td>
-          <td port="r10" %(10)s> </td>
-          <td port="r11" %(11)s> </td>
-          <td port="r12" %(12)s> </td>
-          <td port="r13" %(13)s> </td>
-          <td port="r14" %(14)s> </td>
-          <td port="r15" %(15)s>...</td>
-        </tr>
-      </table>
-    >;
-  ];
-  q:r9 -> "my view of\\nhead committed" [dir="back"];
-  "tail\\ncommitted" -> q:r%(tc)s;
-  "tail\\npending" -> q:r%(tp)s;
-  "head\\ncommitted" -> q:r%(hc)s;
-  "head\\npending" -> q:r%(hp)s;
-}
-</script></code></pre>
-</div>
+<!-- .slide: data-transition="none" -->
 
-Note:
-
-- SLOW DOWN
-- Ages come and pass, leaving memories that become legend. Legend fades to myth,
-  and even myth is long forgotten when the Age that gave it birth comes again.
-'''
-
-slide_template = '''
 <div class="background">
 <pre><code class="language-plantuml"><script type="text/template">
 digraph g {
@@ -175,5 +126,5 @@ def gen_all():
 def write_md(f):
   slides = gen_all()
   with open(f, "w") as file:
-    file.write("\n-----\n".join(slides))
+    file.write("\n---\n".join(slides))
 
