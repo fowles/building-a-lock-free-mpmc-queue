@@ -412,7 +412,6 @@ digraph g {
   "head\ncommitted" -> q:r9;
   "head\npending" -> q:r11;
 }
-```
 </script></code></pre>
 </div>
 

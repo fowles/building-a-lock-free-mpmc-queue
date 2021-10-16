@@ -1,6 +1,61 @@
 <!-- .slide: data-background="./thinker.png" -->
 <!-- .slide: data-background-size="contain" -->
 <!-- .slide: data-background-color="black" -->
+<!-- .slide: data-transition="none" -->
+
+<div class="background">
+<pre><code class="language-plantuml"><script type="text/template">
+digraph g {
+  bgcolor = "transparent";
+  rankdir = BT;
+  node [
+    fontname = "courier";
+    shape = none;
+  ];
+  q [
+    fontsize=30;
+    label=<
+      <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+        <tr>
+          <td port="r0" style="dotted" sides="TBR">...</td>
+          <td port="r1" style="dotted" sides="TBR"> </td>
+          <td port="r2" style="dotted" sides="TBR"> </td>
+          <td port="r3" style="dotted" sides="TBR"> </td>
+          <td port="r4" style="dotted" sides="TBR"> </td>
+          <td port="r5"> </td>
+          <td port="r6"> </td>
+          <td port="r7"> </td>
+          <td port="r8"> </td>
+          <td port="r9"> </td>
+          <td port="r10" style="dotted" sides="TBR"> </td>
+          <td port="r11" style="dotted" sides="TBR"> </td>
+          <td port="r12" style="dotted" sides="TBR"> </td>
+          <td port="r13" style="dotted" sides="TBR"> </td>
+          <td port="r14" style="dotted" sides="TBR"> </td>
+          <td port="r15" style="dotted" sides="TB">...</td>
+        </tr>
+      </table>
+    >;
+  ];
+  q:r9 -> "my view of\nhead committed" [dir="back"];
+  "tail\ncommitted" -> q:r3;
+  "tail\npending" -> q:r5;
+  "head\ncommitted" -> q:r9;
+  "head\npending" -> q:r11;
+}
+</script></code></pre>
+</div>
+
+Note:
+
+- SLOW DOWN
+- ANIMATION ENDED
+
+-----
+
+<!-- .slide: data-background="./thinker.png" -->
+<!-- .slide: data-background-size="contain" -->
+<!-- .slide: data-background-color="black" -->
 
 ```cc [4|8-9]
 absl::optional<Range> ClaimRemove(int n) {
