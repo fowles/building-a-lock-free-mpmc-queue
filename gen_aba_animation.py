@@ -126,5 +126,10 @@ def gen_all():
 def write_md(f):
   slides = gen_all()
   with open(f, "w") as file:
-    file.write("\n---\n".join(slides))
+    prefix = ""
+    for idx, s in enumerate(slides, start=1):
+      file.write(prefix)
+      prefix = "---\n"
+      file.write(s)
+      file.write("- Slide %d/%d\n" % (idx, len(slides)))
 
