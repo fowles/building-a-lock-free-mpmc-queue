@@ -1259,16 +1259,14 @@ Note:
 
 -----
 
-```cc [|4-6,10|7-9]
+```cc [|4-6,10|7]
 void AdvanceCommitLine(
     std::atomic<uint32_t> *commit, Range r) {
   uint32_t temp_pos;
   while (!commit->compare_exchange_weak(
             temp_pos = r.from, r.to,
             order_release, order_relaxed)) {
-#ifdef __x86_64__
     _mm_pause();
-#endif
   }
 }
 ```

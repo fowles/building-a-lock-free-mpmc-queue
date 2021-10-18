@@ -451,9 +451,7 @@ NOTES:
 ```cc
 void AwaitChange(std::atomic<uint32_t> &v, uint32_t actual) {
   while (v.load(std::memory_order_relaxed) != actual) {
-#ifdef __x86_64__
     _mm_pause();
-#endif
   }
 }
 ```

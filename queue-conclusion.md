@@ -146,6 +146,7 @@ NOTES:
 <img class="fragment absolute top-0 left-0" src="./race-drag.png" style="width: 30%;" />
 <img class="fragment absolute top-20 left-20" src="./race-autocross.png" style="width: 30%;" />
 <img class="fragment absolute transform translate-x-40 translate-y-40" src="./deepwater-horizon.png" style="width: 40%;" />
+<img class="fragment absolute transform -translate-x-40 translate-y-40" src="./rusty-lock.png" style="width: 40%;" />
 
 NOTES:
 
