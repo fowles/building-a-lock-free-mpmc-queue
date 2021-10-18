@@ -439,7 +439,6 @@ NOTES:
 - Since these are bits that will be masked to each other we want as little
   overlap as possible.  Also, we each subsequent value to be unique.
 
-
 ---
 
 <!-- .slide: data-background="./rusty-lock.png" -->
