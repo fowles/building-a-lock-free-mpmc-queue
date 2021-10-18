@@ -274,7 +274,7 @@ NOTES:
 
 ```cc [|4-6]
 void AdvanceCommitLine(
-    std::atomic<uint32_t> *commit, Range r) {
+    std::atomic<uint32_t>* commit, Range r) {
   uint32_t temp_pos;
   while (!commit->compare_exchange_weak(
             temp_pos = r.from, r.to,

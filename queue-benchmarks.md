@@ -449,7 +449,7 @@ NOTES:
 <!-- .slide: data-background="./dog-sniffing-tail.png" -->
 
 ```cc
-void AwaitChange(std::atomic<uint32_t> &v, uint32_t actual) {
+void AwaitChange(std::atomic<uint32_t>& v, uint32_t actual) {
   while (v.load(std::memory_order_relaxed) != actual) {
     _mm_pause();
   }
