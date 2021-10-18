@@ -1199,7 +1199,7 @@ class TransferCache {
   absl::optional<Range> ClaimRemove(int n);
 
   // *Releases* `c` and advances its position.
-  void AdvanceCommitLine(std::atomic<int32_t>* c, Range r);
+  void AdvanceCommitLine(std::atomic<uint32_t>* c, Range r);
 
  public:
   void InsertRange(absl::Span<void*> batch, int n);
@@ -1261,7 +1261,7 @@ Note:
 
 ```cc [|4-6,10|7-9]
 void AdvanceCommitLine(
-    std::atomic<int32_t> *commit, Range r) {
+    std::atomic<uint32_t> *commit, Range r) {
   int32_t temp_pos;
   while (!commit->compare_exchange_weak(
             temp_pos = r.from, r.to,
