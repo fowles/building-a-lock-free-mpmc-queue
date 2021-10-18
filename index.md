@@ -1,4 +1,4 @@
-<!-- .slide: data-background="./rusty-lock.jpg" -->
+<!-- .slide: data-background="./rusty-lock.png" -->
 
 <div class="background" style="border-radius: 10px">
   <h4 style="margin-bottom: 0;">Building a lock-free MPMC queue for tcmalloc</h4>

@@ -26,7 +26,7 @@ NOTES:
 
 ---
 
-<!-- .slide: data-background="./rusty-lock.jpg" -->
+<!-- .slide: data-background="./rusty-lock.png" -->
 
 <img class="fragment absolute transform rotate-12 -translate-y-10 -translate-x-10" src="./deepwater-horizon.png" style="width: 60%;" data-fragment-index="1" />
 
@@ -273,7 +273,7 @@ NOTES:
 <!-- .slide: data-background="./letter-a.png" -->
 
 ```cc [|4-6]
-ABSL_ATTRIBUTE_ALWAYS_INLINE void AdvanceCommitLine(
+void AdvanceCommitLine(
     std::atomic<int32_t> *commit, Range r) {
   int32_t temp_pos;
   while (!commit->compare_exchange_weak(

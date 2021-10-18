@@ -1,4 +1,4 @@
-<!-- .slide: data-background="./treasure.png" -->
+<!-- .slide: data-background="./treasure-map.png" -->
 
 NOTES:
 

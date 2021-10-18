@@ -1260,7 +1260,7 @@ Note:
 -----
 
 ```cc [|4-6,10|7-9]
-ABSL_ATTRIBUTE_ALWAYS_INLINE void AdvanceCommitLine(
+void AdvanceCommitLine(
     std::atomic<int32_t> *commit, Range r) {
   int32_t temp_pos;
   while (!commit->compare_exchange_weak(
