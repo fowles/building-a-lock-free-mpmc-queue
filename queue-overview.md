@@ -1221,9 +1221,9 @@ Note:
 
 ```cc [|2|4-6|8|3,9-10|11]
 absl::optional<Range> ClaimInsert(int n) {
-  int32_t new_h, old_h = head_.load(order_relaxed);
+  uint32_t new_h, old_h = head_.load(order_relaxed);
   do {
-    int32_t t = tail_committed_.load(order_acquire);
+    uint32_t t = tail_committed_.load(order_acquire);
     size_t size = size_from_pos(old_h, t);
     if (!EnsureCacheSpace(size + n)) return absl::nullopt;
 
@@ -1262,7 +1262,7 @@ Note:
 ```cc [|4-6,10|7-9]
 void AdvanceCommitLine(
     std::atomic<uint32_t> *commit, Range r) {
-  int32_t temp_pos;
+  uint32_t temp_pos;
   while (!commit->compare_exchange_weak(
             temp_pos = r.from, r.to,
             order_release, order_relaxed)) {

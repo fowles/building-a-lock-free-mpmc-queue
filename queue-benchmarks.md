@@ -397,10 +397,10 @@ NOTES:
 
 ```cc [|4-6]
 absl::optional<Range> ClaimRemove(int n) {
-  int32_t new_t, old_t = tail_.load(order_relaxed);
+  uint32_t new_t, old_t = tail_.load(order_relaxed);
   do {
-    int32_t h = head_committed_.load(order_acquire);
-    int32_t s = size_from_pos(h, old_t);
+    uint32_t h = head_committed_.load(order_acquire);
+    uint32_t s = size_from_pos(h, old_t);
     if (s < n) return absl::nullopt;
     new_t = old_t + n;
   } while (!tail_.compare_exchange_weak(
@@ -423,7 +423,7 @@ NOTES:
 ```cc [|5|6]
 absl::optional<Range> ClaimRemove(int n) {
   // ...
-    int32_t h = head_committed_.load(order_acquire);
+    uint32_t h = head_committed_.load(order_acquire);
     if (s < n) {
       if (head != head_.load(std::memory_order_relaxed)) {
         AwaitChange(head_committed_, head);
@@ -449,7 +449,7 @@ NOTES:
 <!-- .slide: data-background="./dog-sniffing-tail.png" -->
 
 ```cc
-void AwaitChange(std::atomic<uint32_t> &v, int32_t actual) {
+void AwaitChange(std::atomic<uint32_t> &v, uint32_t actual) {
   while (v.load(std::memory_order_relaxed) != actual) {
 #ifdef __x86_64__
     _mm_pause();

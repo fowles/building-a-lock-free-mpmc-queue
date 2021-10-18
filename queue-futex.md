@@ -10,7 +10,7 @@ NOTES:
 <!-- .slide: data-background="./rusty-lock.png" -->
 
 ```cc [2,6]
-void AwaitChange(std::atomic<uint32_t> &v, int32_t actual) {
+void AwaitChange(std::atomic<uint32_t> &v, uint32_t actual) {
   while (v.load(std::memory_order_relaxed) != actual) {
 #ifdef __x86_64__
     _mm_pause();
@@ -31,7 +31,7 @@ NOTES:
 ```cc [4-6,10]
 void AdvanceCommitLine(
     std::atomic<uint32_t> *commit, Range r) {
-  int32_t temp_pos;
+  uint32_t temp_pos;
   while (!commit->compare_exchange_weak(
             temp_pos = r.from, r.to,
             order_release, order_relaxed)) {
@@ -144,7 +144,7 @@ NOTES:
 <!-- .slide: data-background="./rusty-lock.png" -->
 
 ```cc []
-void AwaitChange(std::atomic<uint32_t> &v, int32_t actual) {
+void AwaitChange(std::atomic<uint32_t> &v, uint32_t actual) {
   while (v.load(std::memory_order_relaxed) != actual) {
 #ifdef __x86_64__
     _mm_pause();
@@ -154,7 +154,7 @@ void AwaitChange(std::atomic<uint32_t> &v, int32_t actual) {
 ```
 
 ```cc []
-void AwaitChange(std::atomic<uint32_t> &v, int32_t actual) {
+void AwaitChange(std::atomic<uint32_t> &v, uint32_t actual) {
   FutexWait(v, cur);
 }
 ```
@@ -173,7 +173,7 @@ NOTES:
 <!-- .slide: data-background="./rusty-lock.png" -->
 
 ```cc []
-void AwaitChange(std::atomic<uint32_t> &v, int32_t actual) {
+void AwaitChange(std::atomic<uint32_t> &v, uint32_t actual) {
     while (true) {
       for (int i = 1024; i > 0; --i) {
         if (v_.load(std::memory_order_relaxed) != actual) {
@@ -203,7 +203,7 @@ NOTES:
 ```cc []
 void AdvanceCommitLine(
     std::atomic<uint32_t> *commit, Range r) {
-  int32_t temp_pos;
+  uint32_t temp_pos;
   while (!commit->compare_exchange_weak(
             temp_pos = r.from, r.to,
             order_release, order_relaxed)) {
@@ -226,7 +226,7 @@ NOTES:
 ```cc []
 void AdvanceCommitLine(
     std::atomic<uint32_t> *commit, Range r) {
-  int32_t temp_pos;
+  uint32_t temp_pos;
   while (!commit->compare_exchange_weak(
             temp_pos = r.from, r.to,
             order_release, order_relaxed)) {
@@ -258,8 +258,8 @@ NOTES:
 <!-- .slide: data-background="./rusty-lock.png" -->
 
 ```cc []
-void AwaitEqual(std::atomic<uint32_t> &v, int32_t desired) {
-    int32_t cur;
+void AwaitEqual(std::atomic<uint32_t> &v, uint32_t desired) {
+    uint32_t cur;
     while (true) {
       for (int i = 1024; i > 0; --i) {
         cur = v_.load(std::memory_order_relaxed);
@@ -311,7 +311,7 @@ NOTES:
 <!-- .slide: data-background="./rusty-lock.png" -->
 
 ```cc [12]
-void AwaitChange(std::atomic<uint32_t> &v, int32_t actual) {
+void AwaitChange(std::atomic<uint32_t> &v, uint32_t actual) {
     while (true) {
       for (int i = 1024; i > 0; --i) {
         if (v_.load(std::memory_order_relaxed) != actual) {
@@ -338,7 +338,7 @@ NOTES:
 <!-- .slide: data-background="./rusty-lock.png" -->
 
 ```cc [12]
-void AwaitChange(std::atomic<uint32_t> &v, int32_t actual) {
+void AwaitChange(std::atomic<uint32_t> &v, uint32_t actual) {
     while (true) {
       for (int i = 1024; i > 0; --i) {
         if (v_.load(std::memory_order_relaxed) != actual) {
@@ -364,8 +364,8 @@ NOTES:
 <!-- .slide: data-background="./rusty-lock.png" -->
 
 ```cc [12]
-void AwaitEqual(std::atomic<uint32_t> &v, int32_t desired) {
-    int32_t cur;
+void AwaitEqual(std::atomic<uint32_t> &v, uint32_t desired) {
+    uint32_t cur;
     while (true) {
       for (int i = 1024; i > 0; --i) {
         cur = v_.load(std::memory_order_relaxed);
@@ -391,8 +391,8 @@ NOTES:
 <!-- .slide: data-background="./rusty-lock.png" -->
 
 ```cc [12]
-void AwaitEqual(std::atomic<uint32_t> &v, int32_t desired) {
-    int32_t cur;
+void AwaitEqual(std::atomic<uint32_t> &v, uint32_t desired) {
+    uint32_t cur;
     while (true) {
       for (int i = 1024; i > 0; --i) {
         cur = v_.load(std::memory_order_relaxed);

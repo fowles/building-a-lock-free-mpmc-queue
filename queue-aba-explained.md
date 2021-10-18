@@ -59,10 +59,10 @@ Note:
 
 ```cc [4|8-9]
 absl::optional<Range> ClaimRemove(int n) {
-  int32_t new_t, old_t = tail_.load(order_relaxed);
+  uint32_t new_t, old_t = tail_.load(order_relaxed);
   do {
-    int32_t h = head_committed_.load(order_acquire);
-    int32_t s = size_from_pos(h, old_t);
+    uint32_t h = head_committed_.load(order_acquire);
+    uint32_t s = size_from_pos(h, old_t);
     if (s < n) return absl::nullopt;
     new_t = (old_t + n) % slots_size();
   } while (!tail_.compare_exchange_weak(
@@ -119,10 +119,10 @@ NOTES:
 
 ```cc [7]
 absl::optional<Range> ClaimRemove(int n) {
-  int32_t new_t, old_t = tail_.load(order_relaxed);
+  uint32_t new_t, old_t = tail_.load(order_relaxed);
   do {
-    int32_t h = head_committed_.load(order_acquire);
-    int32_t s = size_from_pos(h, old_t);
+    uint32_t h = head_committed_.load(order_acquire);
+    uint32_t s = size_from_pos(h, old_t);
     if (s < n) return absl::nullopt;
     new_t = (old_t + n) % slots_size();
   } while (!tail_.compare_exchange_weak(
@@ -143,10 +143,10 @@ NOTES:
 
 ```cc [7]
 absl::optional<Range> ClaimRemove(int n) {
-  int32_t new_t, old_t = tail_.load(order_relaxed);
+  uint32_t new_t, old_t = tail_.load(order_relaxed);
   do {
-    int32_t h = head_committed_.load(order_acquire);
-    int32_t s = size_from_pos(h, old_t);
+    uint32_t h = head_committed_.load(order_acquire);
+    uint32_t s = size_from_pos(h, old_t);
     if (s < n) return absl::nullopt;
     new_t = old_t + n;
   } while (!tail_.compare_exchange_weak(
@@ -174,7 +174,7 @@ void CopyIntoSlots(Span<void*> batch, Range r) {
     memcpy(GetSlot(r.start), batch.data(),
            sizeof(void*) * (r.end - r.start));
   } else {
-    int32_t overhang = slots_size() + 1 - r.start;
+    uint32_t overhang = slots_size() + 1 - r.start;
     memcpy(GetSlot(r.start), batch.data(),
            sizeof(void*) * overhang);
     memcpy(GetSlot(0), batch.data() + overhang,

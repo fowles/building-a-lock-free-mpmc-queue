@@ -51,9 +51,9 @@ NOTES:
 
 ```cc [|8]
 absl::optional<Range> ClaimInsert(int n) {
-  int32_t new_h, old_h = head_.load(order_relaxed);
+  uint32_t new_h, old_h = head_.load(order_relaxed);
   do {
-    int32_t t = tail_committed_.load(order_acquire);
+    uint32_t t = tail_committed_.load(order_acquire);
     size_t size = size_from_pos(old_h, t);
     if (!EnsureCacheSpace(size + n)) return absl::nullopt;
 
@@ -79,9 +79,9 @@ NOTES:
 
 ```cc [8]
 absl::optional<Range> ClaimInsert(int n) {
-  int32_t new_h, old_h = head_.load(order_relaxed);
+  uint32_t new_h, old_h = head_.load(order_relaxed);
   do {
-    int32_t t = tail_committed_.load(order_acquire);
+    uint32_t t = tail_committed_.load(order_acquire);
     size_t size = size_from_pos(old_h, t);
     if (!EnsureCacheSpace(size + n)) return absl::nullopt;
 
@@ -275,7 +275,7 @@ NOTES:
 ```cc [|4-6]
 void AdvanceCommitLine(
     std::atomic<uint32_t> *commit, Range r) {
-  int32_t temp_pos;
+  uint32_t temp_pos;
   while (!commit->compare_exchange_weak(
             temp_pos = r.from, r.to,
             order_release, order_relaxed)) {
@@ -288,10 +288,10 @@ void AdvanceCommitLine(
 
 ```cc [|4]
 absl::optional<Range> ClaimRemove(int n) {
-  int32_t new_t, old_t = tail_.load(order_relaxed);
+  uint32_t new_t, old_t = tail_.load(order_relaxed);
   do {
-    int32_t h = head_committed_.load(order_acquire);
-    int32_t s = size_from_pos(h, old_t);
+    uint32_t h = head_committed_.load(order_acquire);
+    uint32_t s = size_from_pos(h, old_t);
     if (s < n) return absl::nullopt;
     new_t = (old_t + n) % slots_size();
   } while (!tail_.compare_exchange_weak(
