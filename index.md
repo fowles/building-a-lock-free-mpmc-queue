@@ -26,13 +26,13 @@ NOTES:
 - This talk has a few sections
   - overview of tcmalloc
   - recommendations for talks and blogs where I learned a lot of this stuff
-  - explanation of LMAX disruptors
-  - re-architecting tcmalloc for unit tests
-  - diving into the new algorithm
+  - explanation of the core design
+  - architecting tcmalloc for unit tests
   - adding fuzz tests
+  - debugging fuzz tests
   - adding benchmarks
-  - fixing race conditions
-  - improving benchmarks
+  - debugging benchmarks
+  - actual results
 
 -----
 
@@ -62,9 +62,12 @@ digraph g {
 }
 ```
 
+[tcmalloc](https://github.com/google/tcmalloc) <!-- .element: class="github" -->
+
 NOTES:
 
 - SLOW DOWN
+- TALK ABOUT THE GITHUB CHIP
 - [tcmalloc][1] is best thought of as a series of layered caches
 - [cpu cache][2] is fastest and unique to both the CPU and size class
 - [transfer cache][3] is unique to the size class but shared for all cpus
