@@ -10,8 +10,8 @@ NOTES:
 <!-- .slide: data-background="./rusty-lock.png" -->
 
 ```cc [2,4]
-void AwaitChange(std::atomic<uint32_t>& v, uint32_t actual) {
-  while (v.load(order_relaxed) != actual) {
+void AwaitChange(std::atomic<uint32_t>& v, uint32_t cur) {
+  while (v.load(order_relaxed) != cur) {
     _mm_pause();
   }
 }
@@ -140,15 +140,15 @@ NOTES:
 <!-- .slide: data-background="./rusty-lock.png" -->
 
 ```cc []
-void AwaitChange(std::atomic<uint32_t>& v, uint32_t current) {
-  while (v.load(order_relaxed) != current) {
+void AwaitChange(std::atomic<uint32_t>& v, uint32_t cur) {
+  while (v.load(order_relaxed) != cur) {
     _mm_pause();
   }
 }
 ```
 
 ```cc []
-void AwaitChange(std::atomic<uint32_t>& v, uint32_t actual) {
+void AwaitChange(std::atomic<uint32_t>& v, uint32_t cur) {
   FutexWait(v, cur);
 }
 ```
@@ -167,16 +167,16 @@ NOTES:
 <!-- .slide: data-background="./rusty-lock.png" -->
 
 ```cc []
-void AwaitChange(std::atomic<uint32_t>& v, uint32_t actual) {
+void AwaitChange(std::atomic<uint32_t>& v, uint32_t cur) {
     while (true) {
       for (int i = 1024; i > 0; --i) {
-        if (v_.load(order_relaxed) != actual) {
+        if (v_.load(order_relaxed) != cur) {
           return;
         }
         _mm_pause();
       }
 
-      FutexWait(v, actual);
+      FutexWait(v, cur);
     }
 }
 ```
@@ -251,7 +251,7 @@ void AwaitEqual(std::atomic<uint32_t>& v, uint32_t desired) {
     while (true) {
       for (int i = 1024; i > 0; --i) {
         cur = v_.load(order_relaxed);
-        if (cur == actual) return;
+        if (cur == desired) return;
         _mm_pause();
       }
 
@@ -297,16 +297,16 @@ NOTES:
 <!-- .slide: data-background="./rusty-lock.png" -->
 
 ```cc [10]
-void AwaitChange(std::atomic<uint32_t>& v, uint32_t actual) {
+void AwaitChange(std::atomic<uint32_t>& v, uint32_t cur) {
     while (true) {
       for (int i = 1024; i > 0; --i) {
-        if (v_.load(order_relaxed) != actual) {
+        if (v_.load(order_relaxed) != cur) {
           return;
         }
         _mm_pause();
       }
 
-      FutexWait(v, actual);
+      FutexWait(v, cur);
     }
 }
 ```
@@ -322,16 +322,16 @@ NOTES:
 <!-- .slide: data-background="./rusty-lock.png" -->
 
 ```cc [10]
-void AwaitChange(std::atomic<uint32_t>& v, uint32_t actual) {
+void AwaitChange(std::atomic<uint32_t>& v, uint32_t cur) {
     while (true) {
       for (int i = 1024; i > 0; --i) {
-        if (v_.load(order_relaxed) != actual) {
+        if (v_.load(order_relaxed) != cur) {
           return;
         }
         _mm_pause();
       }
 
-      FutexWaitBitset(v, actual, FUTEX_BITSET_MATCH_ANY);
+      FutexWaitBitset(v, cur, FUTEX_BITSET_MATCH_ANY);
     }
 }
 ```
@@ -351,7 +351,7 @@ void AwaitEqual(std::atomic<uint32_t>& v, uint32_t desired) {
     while (true) {
       for (int i = 1024; i > 0; --i) {
         cur = v_.load(order_relaxed);
-        if (cur == actual) return;
+        if (cur == desired) return;
         _mm_pause();
       }
 
@@ -376,7 +376,7 @@ void AwaitEqual(std::atomic<uint32_t>& v, uint32_t desired) {
     while (true) {
       for (int i = 1024; i > 0; --i) {
         cur = v_.load(order_relaxed);
-        if (cur == actual) return;
+        if (cur == desired) return;
         _mm_pause();
       }
 
