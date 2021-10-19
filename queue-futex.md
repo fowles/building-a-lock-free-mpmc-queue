@@ -11,7 +11,7 @@ NOTES:
 
 ```cc [2,4]
 void AwaitChange(std::atomic<uint32_t>& v, uint32_t actual) {
-  while (v.load(std::memory_order_relaxed) != actual) {
+  while (v.load(order_relaxed) != actual) {
     _mm_pause();
   }
 }
@@ -140,8 +140,8 @@ NOTES:
 <!-- .slide: data-background="./rusty-lock.png" -->
 
 ```cc []
-void AwaitChange(std::atomic<uint32_t>& v, uint32_t actual) {
-  while (v.load(std::memory_order_relaxed) != actual) {
+void AwaitChange(std::atomic<uint32_t>& v, uint32_t current) {
+  while (v.load(order_relaxed) != current) {
     _mm_pause();
   }
 }
@@ -170,7 +170,7 @@ NOTES:
 void AwaitChange(std::atomic<uint32_t>& v, uint32_t actual) {
     while (true) {
       for (int i = 1024; i > 0; --i) {
-        if (v_.load(std::memory_order_relaxed) != actual) {
+        if (v_.load(order_relaxed) != actual) {
           return;
         }
         _mm_pause();
@@ -250,7 +250,7 @@ void AwaitEqual(std::atomic<uint32_t>& v, uint32_t desired) {
     uint32_t cur;
     while (true) {
       for (int i = 1024; i > 0; --i) {
-        cur = v_.load(std::memory_order_relaxed);
+        cur = v_.load(order_relaxed);
         if (cur == actual) return;
         _mm_pause();
       }
@@ -300,7 +300,7 @@ NOTES:
 void AwaitChange(std::atomic<uint32_t>& v, uint32_t actual) {
     while (true) {
       for (int i = 1024; i > 0; --i) {
-        if (v_.load(std::memory_order_relaxed) != actual) {
+        if (v_.load(order_relaxed) != actual) {
           return;
         }
         _mm_pause();
@@ -325,7 +325,7 @@ NOTES:
 void AwaitChange(std::atomic<uint32_t>& v, uint32_t actual) {
     while (true) {
       for (int i = 1024; i > 0; --i) {
-        if (v_.load(std::memory_order_relaxed) != actual) {
+        if (v_.load(order_relaxed) != actual) {
           return;
         }
         _mm_pause();
@@ -350,7 +350,7 @@ void AwaitEqual(std::atomic<uint32_t>& v, uint32_t desired) {
     uint32_t cur;
     while (true) {
       for (int i = 1024; i > 0; --i) {
-        cur = v_.load(std::memory_order_relaxed);
+        cur = v_.load(order_relaxed);
         if (cur == actual) return;
         _mm_pause();
       }
@@ -375,7 +375,7 @@ void AwaitEqual(std::atomic<uint32_t>& v, uint32_t desired) {
     uint32_t cur;
     while (true) {
       for (int i = 1024; i > 0; --i) {
-        cur = v_.load(std::memory_order_relaxed);
+        cur = v_.load(order_relaxed);
         if (cur == actual) return;
         _mm_pause();
       }

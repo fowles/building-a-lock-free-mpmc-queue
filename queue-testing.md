@@ -279,9 +279,7 @@ void AdvanceCommitLine(
   while (!commit->compare_exchange_weak(
             temp_pos = r.from, r.to,
             order_release, order_relaxed)) {
-#ifdef __x86_64__
     _mm_pause();
-#endif
   }
 }
 ```

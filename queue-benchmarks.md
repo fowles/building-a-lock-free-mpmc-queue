@@ -425,7 +425,7 @@ absl::optional<Range> ClaimRemove(int n) {
   // ...
     uint32_t h = head_committed_.load(order_acquire);
     if (s < n) {
-      if (head != head_.load(std::memory_order_relaxed)) {
+      if (head != head_.load(order_relaxed)) {
         AwaitChange(head_committed_, head);
         return ClaimRemove(n);
       }
@@ -450,7 +450,7 @@ NOTES:
 
 ```cc
 void AwaitChange(std::atomic<uint32_t>& v, uint32_t actual) {
-  while (v.load(std::memory_order_relaxed) != actual) {
+  while (v.load(order_relaxed) != actual) {
     _mm_pause();
   }
 }
