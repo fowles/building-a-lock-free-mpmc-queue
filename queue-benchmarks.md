@@ -395,7 +395,7 @@ NOTES:
 
 <!-- .slide: data-background="./dog-sniffing-tail.png" -->
 
-```cc [|4-6]
+```cc [4-6]
 absl::optional<Range> ClaimRemove(int n) {
   uint32_t new_t, old_t = tail_.load(order_relaxed);
   do {
@@ -420,10 +420,11 @@ NOTES:
 
 <!-- .slide: data-background="./dog-sniffing-tail.png" -->
 
-```cc [|5|6]
+```cc [3-5|6|7|]
 absl::optional<Range> ClaimRemove(int n) {
   // ...
     uint32_t h = head_committed_.load(order_acquire);
+    uint32_t s = size_from_pos(h, old_t);
     if (s < n) {
       if (head != head_.load(order_relaxed)) {
         AwaitChange(head_committed_, head);
@@ -440,9 +441,10 @@ absl::optional<Range> ClaimRemove(int n) {
 NOTES:
 
 - SLOW DOWN
-- Now we look to see if our pending line has gotten ahead of our commit line.
-  If it has, someone else is working on it, so we simply need to wait for them
-  to finish!
+- ADVANCE: now when we see that we don't have enough size
+- ADVANCE: we sniff at the pending line to see if there is another thread
+- ADVANCE: and if there is we wait for it to finish before rtying again
+- ADVANCE: all told it looks like this.  Let's jump into `AwaitChange`
 
 ---
 
@@ -461,7 +463,5 @@ void AwaitChange(std::atomic<uint32_t>& v, uint32_t actual) {
 NOTES:
 
 - SLOW DOWN
-- Now we look to see if our pending line has gotten ahead of our commit line.
-  If it has, someone else is working on it, so we simply need to wait for them
-  to finish!
+- pretty simple, but wait a second, isn't that another spin lock?
 
